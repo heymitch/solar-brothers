@@ -1,9 +1,18 @@
 # Solar Brothers Melee — Prototype
 
-2D adventure brawler with **Melee-engine combat**. Subspace-Emissary structure with a Melee feel —
-the thing Brawl should have been.
+**A platform fighting adventure that feels like 2001.**
+
+Wavedash. L-cancel. Dash dance. By design.
+
+Two modes, one engine:
+
+- **Versus** — *Skill scales. You don't.* Stocks, ring-outs, wall and floor KOs. No skill trees. Where the floor and the wall can KO you.
+- **Adventure** — Build your fighter in Adventure. Drop the build in Versus. (Adventure progression does NOT carry into Versus — that's the firewall.)
 
 > Four fighters. One platform. No mercy.
+
+**Live demo:** https://solar-brothers-prototype.vercel.app
+**Brand canon:** `../design-system/project/README.md`
 
 ## What's playable today (v0.1)
 

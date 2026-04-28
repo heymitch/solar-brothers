@@ -51,9 +51,11 @@ function Hud() {
   return (
     <>
       <div className="hud hud-tl">
-        <div>BRAMM &middot; {damage}%</div>
+        <div>
+          <span className="name">Bramm</span> &middot; {damage}%
+        </div>
         <div>stocks {stocks}</div>
-        <div style={{ opacity: 0.55 }}>{motion}</div>
+        <div className="motion">{motion}</div>
       </div>
       <div className="hud hud-tr">
         {fps} fps &middot; {ticks} ticks
@@ -65,13 +67,16 @@ function Hud() {
 function TitleCard({ onStart }: { onStart: () => void }) {
   return (
     <div className="title-card" onClick={onStart}>
-      <h1>Solar Brothers Melee</h1>
-      <p>2D adventure with Melee engine. Build in public.</p>
-      <p style={{ marginTop: 18, opacity: 0.7 }}>
-        <kbd>A</kbd>/<kbd>D</kbd> move &middot; <kbd>Space</kbd> jump (x2) &middot;{" "}
+      <h1 className="wordmark">
+        Solar Brothers <span className="melee">melee.</span>
+      </h1>
+      <p className="headline">A platform fighting adventure that feels like 2001.</p>
+      <p className="tech">Wavedash. L-cancel. Dash dance. By design.</p>
+      <p className="controls">
+        <kbd>A</kbd>/<kbd>D</kbd> move &middot; <kbd>Space</kbd> jump (&times;2) &middot;{" "}
         <kbd>S</kbd> fast-fall
       </p>
-      <p style={{ marginTop: 24, fontSize: 13, opacity: 0.5 }}>click anywhere to start</p>
+      <p className="start-cue">click anywhere to start</p>
     </div>
   );
 }

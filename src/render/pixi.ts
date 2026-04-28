@@ -20,9 +20,10 @@ interface Camera {
 export async function mountPixi(host: HTMLElement): Promise<PixiHandle> {
   const app = new Application();
   await app.init({
-    background: 0x6fb1d9, // sky
+    // sbm-sky teal as the daytime backdrop
+    background: 0x7cb6c4,
     resizeTo: host,
-    antialias: false, // pixel-art preference (sharp edges)
+    antialias: true,
     autoDensity: true,
     resolution: window.devicePixelRatio,
   });
@@ -41,10 +42,10 @@ export async function mountPixi(host: HTMLElement): Promise<PixiHandle> {
   const playerGfx = new Graphics();
   world.addChild(playerGfx);
 
-  // Sky gradient strip — sun band along the horizon. Doesn't move with camera.
+  // Skybox — twin-sun band along the horizon, doesn't move with camera.
+  // sbm-sky base, sbm-amber sun band, sbm-solar accent stripe.
   const sky = new Graphics();
-  sky.rect(0, 0, app.screen.width, app.screen.height).fill(0x6fb1d9);
-  sky.rect(0, app.screen.height * 0.55, app.screen.width, 80).fill(0xf6c66b);
+  paintSky(sky, app.screen.width, app.screen.height);
   app.stage.addChildAt(sky, 0);
 
   const cam: Camera = { x: 0, y: 0 };
@@ -64,9 +65,7 @@ export async function mountPixi(host: HTMLElement): Promise<PixiHandle> {
     drawFighter(playerGfx);
 
     // Resize sky if viewport changed.
-    sky.clear();
-    sky.rect(0, 0, app.screen.width, app.screen.height).fill(0x6fb1d9);
-    sky.rect(0, app.screen.height * 0.55, app.screen.width, 80).fill(0xf6c66b);
+    paintSky(sky, app.screen.width, app.screen.height);
   });
 
   return {
@@ -77,12 +76,23 @@ export async function mountPixi(host: HTMLElement): Promise<PixiHandle> {
   };
 }
 
+function paintSky(g: Graphics, w: number, h: number) {
+  g.clear();
+  // sbm-sky base
+  g.rect(0, 0, w, h).fill(0x7cb6c4);
+  // sbm-amber sun band along the horizon
+  g.rect(0, h * 0.55, w, h * 0.04).fill(0xe8b547);
+  // Two suns silhouettes (placeholder discs)
+  g.circle(w * 0.18, h * 0.42, Math.min(w, h) * 0.06).fill(0xe97a1a);
+  g.circle(w * 0.78, h * 0.36, Math.min(w, h) * 0.045).fill(0xe8b547);
+}
+
 function drawStage(g: Graphics) {
   const p = STAGE1.platform;
   g.clear();
-  // Platform top in fern green, fading down to dark soil.
-  g.rect(p.x, p.y - p.h, p.w, p.h).fill(0x4f8a4f);
-  g.rect(p.x, p.y - p.h, p.w, 8).fill(0x9bd07a); // grass strip
+  // Platform body = sbm-moss (the field), grass strip = sbm-leaf.
+  g.rect(p.x, p.y - p.h, p.w, p.h).fill(0x2f5d3a);
+  g.rect(p.x, p.y - p.h, p.w, 8).fill(0x6faa4a);
 }
 
 function drawFighter(g: Graphics) {

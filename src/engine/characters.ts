@@ -18,20 +18,23 @@ export interface Archetype {
   weight?: number;
 }
 
-// Bramm Roke — Heavy Rusher (Captain Falcon archetype).
+// Brand palette tokens (mirrors design-system/project/README.md, locked 2026-04-28).
+// These hex values must stay in sync with the brand canvas+moss+solar trinity.
+
+// Bramm Roke — Heavy Rusher (Captain Falcon source).
 // High weight = hard to launch. Heavy ground speed, slower jumpsquat,
-// huge knockback dealt. Implementation lead per source-of-truth §12.
+// huge knockback dealt. Numbers placeholder — Phase 2 ports Falcon frame data.
 export const BRAMM: Archetype = {
   id: "bramm",
   name: "Bramm Roke",
   title: "The Skybreaker",
-  color: 0xc8542e, // ember orange-red
+  color: 0xb85540, // sbm-clay (terracotta — heavy, kinetic, danger)
   walkSpeed: 140,
-  runSpeed: 360, // fast, but recovers slow
+  runSpeed: 360,
   airSpeed: 220,
   jumpVelocity: 760,
   doubleJumpVelocity: 600,
-  jumpSquatFrames: 6, // heavy = longer jumpsquat
+  jumpSquatFrames: 6,
   weight: 110,
 };
 
@@ -40,21 +43,21 @@ export const CAEL: Archetype = {
   id: "cael",
   name: "Cael Solari",
   title: "The Skyburner Prince",
-  color: 0xf6c66b, // amber
+  color: 0xe97a1a, // sbm-solar (the sword-glow / hero accent)
 };
 
 export const KITE: Archetype = {
   id: "kite",
   name: "Kite Vox",
   title: "The Windrunner",
-  color: 0x6fb1d9, // sky
+  color: 0x7cb6c4, // sbm-sky
 };
 
 export const LUMA: Archetype = {
   id: "luma",
   name: "Luma Mielle",
   title: "The Sunsong",
-  color: 0xfde88a, // pale gold
+  color: 0xe8b547, // sbm-amber
 };
 
 export const ROSTER: Record<ArchetypeId, Archetype> = {
