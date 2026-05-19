@@ -1,6 +1,13 @@
 // Polling-based input. Each tick reads the current state of buttons —
 // no event accumulation, no React state. Engine never blocks on input.
 // We track "pressed this tick" via edge detection between current and prior frame.
+//
+// Edge-triggered global commands (replay download, dummy reset, debug
+// hitbox toggle) are wired here as side-effects of their own keys so that
+// they don't pollute the per-tick InputFrame consumed by the engine.
+
+import { downloadReplay, clearReplay } from "./replay";
+import { DUMMY, PLAYER, resetDummy } from "./state";
 
 export interface InputFrame {
   left: boolean;
@@ -8,7 +15,7 @@ export interface InputFrame {
   up: boolean;
   down: boolean;
   jump: boolean;
-  jumpPressed: boolean; // true only on the tick the key went down
+  jumpPressed: boolean;
   attack: boolean;
   attackPressed: boolean;
   special: boolean;
@@ -21,10 +28,27 @@ let prevJump = false;
 let prevAttack = false;
 let prevSpecial = false;
 
+// Debug toggle — when true, the renderer draws hitboxes for active moves.
+let _showHitboxes = false;
+export function showHitboxesEnabled() {
+  return _showHitboxes;
+}
+
 export function attachInput(target: Window = window) {
   const down = (e: KeyboardEvent) => {
     keys.add(e.code);
-    // Prevent default for game keys so the page doesn't scroll on Space/arrows.
+    // Global one-shot commands — handled here, not via InputFrame.
+    if (e.code === "KeyM") {
+      downloadReplay(PLAYER.archetype.id, DUMMY.archetype.id);
+    } else if (e.code === "KeyR") {
+      // Reset dummy to neutral. Useful when it gets KO'd or stuck.
+      resetDummy({ x: 220, y: 0 });
+    } else if (e.code === "KeyH") {
+      _showHitboxes = !_showHitboxes;
+    } else if (e.code === "KeyC") {
+      // Clear the replay buffer (start fresh recording from now).
+      clearReplay();
+    }
     if (
       e.code === "Space" ||
       e.code.startsWith("Arrow") ||
@@ -52,10 +76,16 @@ export function readInput(): InputFrame {
   const right = keys.has("ArrowRight") || keys.has("KeyD");
   const up = keys.has("ArrowUp") || keys.has("KeyW");
   const down = keys.has("ArrowDown") || keys.has("KeyS");
-  const jump = keys.has("Space") || keys.has("KeyJ");
-  const attack = keys.has("KeyF");
-  const special = keys.has("KeyR");
-  const shield = keys.has("KeyL") || keys.has("ShiftLeft");
+  // Jump on Space, J, W, or Up — all common platform-fighter conventions.
+  const jump =
+    keys.has("Space") ||
+    keys.has("KeyJ") ||
+    keys.has("KeyW") ||
+    keys.has("ArrowUp");
+  // Attack: F (legacy) or K (matches Smash-friendly right-hand layout)
+  const attack = keys.has("KeyF") || keys.has("KeyK");
+  const special = keys.has("KeyG") || keys.has("KeyL");
+  const shield = keys.has("ShiftLeft");
 
   const jumpPressed = jump && !prevJump;
   const attackPressed = attack && !prevAttack;

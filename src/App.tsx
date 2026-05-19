@@ -21,7 +21,11 @@ export function App() {
         return;
       }
       detachInput = attachInput(window);
-      startLoop(() => {});
+      // Pass the hit-VFX hook so the engine can route hit events here.
+      startLoop(
+        () => {},
+        (events) => handle?.spawnHitVfx(events)
+      );
     })();
 
     return () => {
@@ -42,23 +46,62 @@ export function App() {
 }
 
 function Hud() {
-  const motion = useHud((s) => s.motion);
-  const damage = useHud((s) => s.damage);
-  const stocks = useHud((s) => s.stocks);
+  const playerName = useHud((s) => s.playerName);
+  const playerDamage = useHud((s) => s.playerDamage);
+  const playerStocks = useHud((s) => s.playerStocks);
+  const playerMotion = useHud((s) => s.playerMotion);
+  const dummyDamage = useHud((s) => s.dummyDamage);
   const fps = useHud((s) => s.fps);
   const ticks = useHud((s) => s.ticks);
+  const replayFrames = useHud((s) => s.replayFrames);
+  const lastHitFlavor = useHud((s) => s.lastHitFlavor);
+  const lastHitDamage = useHud((s) => s.lastHitDamage);
+  const lastHitKb = useHud((s) => s.lastHitKb);
 
   return (
     <>
       <div className="hud hud-tl">
         <div>
-          <span className="name">Bramm</span> &middot; {damage}%
+          <span className="name">{playerName}</span> &middot; {playerDamage}%
         </div>
-        <div>stocks {stocks}</div>
-        <div className="motion">{motion}</div>
+        <div>stocks {playerStocks}</div>
+        <div className="motion">{playerMotion}</div>
+      </div>
+      <div className="hud hud-tc">
+        <div className="dummy-label">DUMMY</div>
+        <div className={"dummy-pct" + (dummyDamage > 100 ? " hot" : "")}>{dummyDamage}%</div>
       </div>
       <div className="hud hud-tr">
         {fps} fps &middot; {ticks} ticks
+        <div className="replay-line">rec {replayFrames}f</div>
+      </div>
+      {lastHitFlavor && (
+        <div className={"hud hud-bl " + (lastHitFlavor === "tipper" ? "tipper" : "")}>
+          <div>{lastHitFlavor === "tipper" ? "★ TIPPER" : "body"}</div>
+          <div>
+            +{lastHitDamage}% &middot; KB {lastHitKb}
+          </div>
+        </div>
+      )}
+      <div className="hud hud-br">
+        <div>
+          <kbd>A</kbd>/<kbd>D</kbd> or <kbd>←</kbd>/<kbd>→</kbd> move
+        </div>
+        <div>
+          <kbd>Space</kbd> / <kbd>W</kbd> / <kbd>↑</kbd> jump (&times;2) &middot;{" "}
+          <kbd>S</kbd> / <kbd>↓</kbd> fast-fall
+        </div>
+        <div>
+          <kbd>K</kbd> or <kbd>F</kbd> attack
+        </div>
+        <div className="muted">
+          air + <kbd>K</kbd> &middot;{" "}
+          <kbd>S</kbd> + <kbd>K</kbd> = Sundown spike
+        </div>
+        <div className="muted">
+          <kbd>H</kbd> hitboxes &middot; <kbd>R</kbd> reset dummy &middot; <kbd>M</kbd> download
+          replay &middot; <kbd>C</kbd> clear replay
+        </div>
       </div>
     </>
   );
@@ -70,11 +113,17 @@ function TitleCard({ onStart }: { onStart: () => void }) {
       <h1 className="wordmark">
         Solar Brothers <span className="melee">melee.</span>
       </h1>
-      <p className="headline">A platform fighting adventure that feels like 2001.</p>
-      <p className="tech">Wavedash. L-cancel. Dash dance. By design.</p>
+      <p className="headline">Cael training room.</p>
+      <p className="tech">Tipper or die. Land the Sundown spike.</p>
       <p className="controls">
         <kbd>A</kbd>/<kbd>D</kbd> move &middot; <kbd>Space</kbd> jump (&times;2) &middot;{" "}
-        <kbd>S</kbd> fast-fall
+        <kbd>S</kbd> fast-fall &middot; <kbd>K</kbd> attack
+      </p>
+      <p className="controls">
+        <kbd>K</kbd> while airborne + <kbd>S</kbd> = <strong>Sundown</strong> (tipper spike)
+      </p>
+      <p className="controls">
+        <kbd>K</kbd> while airborne = <strong>Tempered Edge</strong> (forward air)
       </p>
       <p className="start-cue">click anywhere to start</p>
     </div>

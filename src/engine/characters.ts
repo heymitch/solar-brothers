@@ -38,12 +38,31 @@ export const BRAMM: Archetype = {
   weight: 110,
 };
 
-// Stubbed — populate in subsequent phases per implementation order.
+// Cael Solari — Slow disjoint swordie / hard-read kill specialist.
+//
+// Per design contract (design/contracts/cael.md):
+//   "The slowest in the cast, the heaviest in the cast, with the kit that
+//    rewards waiting. His ground game is sluggish, his approach is committal,
+//    his recovery is predictable. By every metric of competitive viability,
+//    Cael should be unplayable. He isn't, because of one move — Sundown."
+//
+// Stat shape: Ike weight + Marth tipper geometry. Slow startup on every
+// ground move. Predictable recovery. Single-read win condition.
+//
+// Numbers below define the "feel taxes" the design contract requires.
+// Do NOT speed Cael up. Patience is the design.
 export const CAEL: Archetype = {
   id: "cael",
   name: "Cael Solari",
   title: "The Skyburner Prince",
   color: 0xe97a1a, // sbm-solar (the sword-glow / hero accent)
+  walkSpeed: 90, // slowest in the cast — half of Bramm's
+  runSpeed: 220, // slow dash
+  airSpeed: 180, // modest air drift
+  jumpVelocity: 680, // a hair below default — Cael leaves the ground reluctantly
+  doubleJumpVelocity: 580,
+  jumpSquatFrames: 8, // 2x default — Cael's jumpsquat is the longest in the cast
+  weight: 115, // heavy. Hard to launch. Dies late vertically.
 };
 
 export const KITE: Archetype = {
